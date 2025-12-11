@@ -4,6 +4,8 @@ version alpha 1.1
 
 
 xsd's https://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/
+validator https://ecosio.com/en/peppol-e-invoice-xml-document-validator/
+learning https://sabis-mok.nbfc.lt/
 
 # SABIS Invoice Converter (JSON to UBL XML)
 
