@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -216,7 +217,8 @@ type PriceType struct {
 // =========================================================
 
 func main() {
-	file, err := os.Open("input.json")
+	flag.Parse()
+	file, err := os.Open(flag.Arg(0))
 	if err != nil {
 		fmt.Println("KLAIDA: Nėra input.json failo")
 		return
@@ -279,10 +281,6 @@ func main() {
 					CityName:   input.Customer.City,
 					Country:    CountryType{IdentificationCode: input.Customer.Country},
 				},
-				PartyTaxScheme: &PartyTaxScheme{
-					CompanyID: input.Customer.VatID,
-					TaxScheme: TaxSchemeType{ID: "VAT"},
-				},
 				PartyLegalEntity: &PartyLegalEntity{
 					RegistrationName: input.Customer.Name,
 					CompanyID:        input.Customer.CompanyID,
@@ -315,6 +313,13 @@ func main() {
 		},
 	}
 
+	if input.Customer.VatID != "" {
+		inv.AccountingCustomerParty.Party.PartyTaxScheme = &PartyTaxScheme{
+			CompanyID: input.Customer.VatID,
+			TaxScheme: TaxSchemeType{ID: "VAT"},
+		}
+	}
+
 	if input.OrderID != "" {
 		inv.OrderReference = &DocReference{ID: input.OrderID}
 	}
@@ -337,8 +342,8 @@ func main() {
 				Name: l.Description,
 				// PILDOMAS NAUJAS LAUKAS (Pagal Jūsų XML pavyzdį):
 				ClassifiedTaxCategory: &TaxCategoryType{
-					ID:      "S",                               // Standartinis tarifas
-					Percent: fmt.Sprintf("%.2f", l.TaxPercent), // Pvz "21.00"
+					ID:      "S",                                   // Standartinis tarifas
+					Percent: fmt.Sprintf("%.2f", input.TaxPercent), // Pvz "21.00"
 					TaxScheme: TaxSchemeType{
 						ID: "VAT",
 					},
