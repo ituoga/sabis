@@ -13,6 +13,8 @@ import (
 
 type InputInvoice struct {
 	ID                string     `json:"id"`
+	OrderID           string     `json:"order_id"`    // Užsakymo Nr.
+	ContractID        string     `json:"contract_id"` // Sutarties Nr. (gali būti tuščias)
 	IssueDate         string     `json:"issue_date"`
 	DueDate           string     `json:"due_date"`
 	Currency          string     `json:"currency"`
@@ -24,8 +26,6 @@ type InputInvoice struct {
 	TaxPercent        float64    `json:"tax_percent"`
 	NetAmount         float64    `json:"net_amount"`
 	PayableAmount     float64    `json:"payable_amount"`
-	OrderID           string     `json:"order_id"`    // Užsakymo Nr.
-	ContractID        string     `json:"contract_id"` // Sutarties Nr. (gali būti tuščias)
 }
 
 type Company struct {
