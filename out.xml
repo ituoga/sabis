@@ -8,8 +8,15 @@
   <cbc:DueDate>2024-01-11</cbc:DueDate>
   <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
   <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:OrderReference>
+    <cbc:ID>1</cbc:ID>
+  </cac:OrderReference>
+  <cac:ContractDocumentReference>
+    <cbc:ID>ŽODINĖ</cbc:ID>
+  </cac:ContractDocumentReference>
   <cac:AccountingSupplierParty>
     <cac:Party>
+      <cbc:EndpointID schemeID="0200">300000001</cbc:EndpointID>
       <cac:PartyName>
         <cbc:Name>Mano Įmonė UAB</cbc:Name>
       </cac:PartyName>
@@ -34,6 +41,7 @@
   </cac:AccountingSupplierParty>
   <cac:AccountingCustomerParty>
     <cac:Party>
+      <cbc:EndpointID schemeID="0200">300000002</cbc:EndpointID>
       <cac:PartyName>
         <cbc:Name>Klientas UAB</cbc:Name>
       </cac:PartyName>
@@ -57,13 +65,13 @@
     </cac:Party>
   </cac:AccountingCustomerParty>
   <cac:TaxTotal>
-    <cbc:TaxAmount currencyID="EUR">126</cbc:TaxAmount>
+    <cbc:TaxAmount currencyID="EUR">126.00</cbc:TaxAmount>
     <cac:TaxSubtotal>
-      <cbc:TaxableAmount currencyID="EUR">600</cbc:TaxableAmount>
-      <cbc:TaxAmount currencyID="EUR">126</cbc:TaxAmount>
+      <cbc:TaxableAmount currencyID="EUR">600.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">126.00</cbc:TaxAmount>
       <cac:TaxCategory>
         <cbc:ID>S</cbc:ID>
-        <cbc:Percent>21</cbc:Percent>
+        <cbc:Percent>21.00</cbc:Percent>
         <cac:TaxScheme>
           <cbc:ID>VAT</cbc:ID>
         </cac:TaxScheme>
@@ -71,31 +79,45 @@
     </cac:TaxSubtotal>
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount currencyID="EUR">600</cbc:LineExtensionAmount>
-    <cbc:TaxExclusiveAmount currencyID="EUR">600</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount currencyID="EUR">726</cbc:TaxInclusiveAmount>
-    <cbc:PayableAmount currencyID="EUR">726</cbc:PayableAmount>
+    <cbc:LineExtensionAmount currencyID="EUR">600.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">600.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">726.00</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">726.00</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
     <cbc:ID>1</cbc:ID>
-    <cbc:InvoicedQuantity unitCode="H87">10</cbc:InvoicedQuantity>
-    <cbc:LineExtensionAmount currencyID="EUR">500</cbc:LineExtensionAmount>
+    <cbc:InvoicedQuantity unitCode="H87">10.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">500.00</cbc:LineExtensionAmount>
     <cac:Item>
       <cbc:Name>Programavimo paslaugos</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
     </cac:Item>
     <cac:Price>
-      <cbc:PriceAmount currencyID="EUR">50</cbc:PriceAmount>
+      <cbc:PriceAmount currencyID="EUR">50.00</cbc:PriceAmount>
     </cac:Price>
   </cac:InvoiceLine>
   <cac:InvoiceLine>
     <cbc:ID>2</cbc:ID>
-    <cbc:InvoicedQuantity unitCode="H87">1</cbc:InvoicedQuantity>
-    <cbc:LineExtensionAmount currencyID="EUR">100</cbc:LineExtensionAmount>
+    <cbc:InvoicedQuantity unitCode="H87">1.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">100.00</cbc:LineExtensionAmount>
     <cac:Item>
       <cbc:Name>Serverio nuoma</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
     </cac:Item>
     <cac:Price>
-      <cbc:PriceAmount currencyID="EUR">100</cbc:PriceAmount>
+      <cbc:PriceAmount currencyID="EUR">100.00</cbc:PriceAmount>
     </cac:Price>
   </cac:InvoiceLine>
 </Invoice>

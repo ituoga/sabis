@@ -51,6 +51,7 @@ type LineItem struct {
 	Quantity    float64 `json:"quantity"`
 	Price       float64 `json:"price"`
 	Amount      float64 `json:"amount"`
+	TaxPercent  float64 `json:"tax_percent"`
 }
 
 // =========================================================
@@ -336,8 +337,8 @@ func main() {
 				Name: l.Description,
 				// PILDOMAS NAUJAS LAUKAS (Pagal Jūsų XML pavyzdį):
 				ClassifiedTaxCategory: &TaxCategoryType{
-					ID:      "S",                                   // Standartinis tarifas
-					Percent: fmt.Sprintf("%.2f", input.TaxPercent), // Pvz "21.00"
+					ID:      "S",                               // Standartinis tarifas
+					Percent: fmt.Sprintf("%.2f", l.TaxPercent), // Pvz "21.00"
 					TaxScheme: TaxSchemeType{
 						ID: "VAT",
 					},

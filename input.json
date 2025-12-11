@@ -27,14 +27,16 @@
       "description": "Programavimo paslaugos",
       "quantity": 10,
       "price": 50.0,
-      "amount": 500.0
+      "amount": 500.0,
+      "tax_percent": 21.0
     },
     {
       "id": "2",
       "description": "Serverio nuoma",
       "quantity": 1,
       "price": 100.0,
-      "amount": 100.0
+      "amount": 100.0,
+      "tax_percent": 21.0
     }
   ],
   "tax_amount": 126.0,
