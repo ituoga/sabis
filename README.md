@@ -62,6 +62,7 @@ Sukurkite failą `input.json` tame pačiame kataloge. Struktūros pavyzdys:
   "net_amount": 500.00,
   "payable_amount": 605.00
 }
+```
 
 ### 2. Paleidimas
 
