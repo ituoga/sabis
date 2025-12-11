@@ -13,11 +13,11 @@ import (
 
 type InputInvoice struct {
 	ID                string     `json:"id"`
-	OrderID           string     `json:"order_id"`    // Užsakymo Nr.
-	ContractID        string     `json:"contract_id"` // Sutarties Nr. (gali būti tuščias)
 	IssueDate         string     `json:"issue_date"`
 	DueDate           string     `json:"due_date"`
 	Currency          string     `json:"currency"`
+	OrderID           string     `json:"order_id"`    // Užsakymo Nr.
+	ContractID        string     `json:"contract_id"` // Sutarties Nr. (gali būti tuščias)
 	Supplier          Company    `json:"supplier"`
 	Customer          Company    `json:"customer"`
 	Lines             []LineItem `json:"lines"`
@@ -61,14 +61,16 @@ type UBLInvoice struct {
 	XmlnsCac string `xml:"xmlns:cac,attr"`
 	XmlnsCbc string `xml:"xmlns:cbc,attr"`
 
-	UBLVersionID     string `xml:"cbc:UBLVersionID"`
-	CustomizationID  string `xml:"cbc:CustomizationID"`
-	ProfileID        string `xml:"cbc:ProfileID"`
-	ID               string `xml:"cbc:ID"`
-	IssueDate        string `xml:"cbc:IssueDate"`
-	DueDate          string `xml:"cbc:DueDate,omitempty"` // omitempty, jei nėra
-	InvoiceTypeCode  string `xml:"cbc:InvoiceTypeCode"`
-	DocumentCurrency string `xml:"cbc:DocumentCurrencyCode"`
+	UBLVersionID              string                     `xml:"cbc:UBLVersionID"`
+	CustomizationID           string                     `xml:"cbc:CustomizationID"`
+	ProfileID                 string                     `xml:"cbc:ProfileID"`
+	ID                        string                     `xml:"cbc:ID"`
+	IssueDate                 string                     `xml:"cbc:IssueDate"`
+	DueDate                   string                     `xml:"cbc:DueDate,omitempty"` // omitempty, jei nėra
+	InvoiceTypeCode           string                     `xml:"cbc:InvoiceTypeCode"`
+	DocumentCurrency          string                     `xml:"cbc:DocumentCurrencyCode"`
+	OrderReference            *OrderReference            `xml:"cac:OrderReference,omitempty"`
+	ContractDocumentReference *ContractDocumentReference `xml:"cac:ContractDocumentReference,omitempty"`
 
 	// --- Šalys (Parties) ---
 	AccountingSupplierParty SupplierParty `xml:"cac:AccountingSupplierParty"`
@@ -80,10 +82,6 @@ type UBLInvoice struct {
 
 	// --- Eilutės ---
 	InvoiceLine []InvoiceLine `xml:"cac:InvoiceLine"`
-
-	OrderReference *OrderReference `xml:"cac:OrderReference,omitempty"`
-
-	ContractDocumentReference *ContractDocumentReference `xml:"cac:ContractDocumentReference,omitempty"`
 }
 type ContractDocumentReference struct {
 	ID string `xml:"cbc:ID"`
