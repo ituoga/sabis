@@ -1,3 +1,3 @@
 # SABIS tinkamo XML konvertavimas iš JSON formato
 
-version alpha 1.0
+version alpha 1.1
