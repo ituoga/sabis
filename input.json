@@ -1,8 +1,15 @@
 {
-  "id": "SASK-2023-999",
+  "id": "SASK-2023-001",
   "issue_date": "2023-12-11",
   "due_date": "2024-01-11",
   "currency": "EUR",
+  "note": "Pirkimas pagal žodinį susitarimą",
+  "order_id": "UZSAK-999",
+  "contract_id": "",
+  "project": {
+    "id": "YES",
+    "name": "IsNotForPublication"
+  },
   "supplier": {
     "name": "Mano Įmonė UAB",
     "company_id": "300000001",
@@ -12,11 +19,11 @@
     "country": "LT"
   },
   "customer": {
-    "name": "Klientas UAB",
-    "company_id": "300000002",
+    "name": "Klientas VšĮ",
+    "company_id": "100000002",
     "vat_id": "LT100000000022",
-    "street": "Savanorių pr. 100",
-    "city": "Kaunas",
+    "street": "Konstitucijos pr. 20",
+    "city": "Vilnius",
     "country": "LT"
   },
   "lines": [
@@ -24,20 +31,13 @@
       "id": "1",
       "description": "Programavimo paslaugos",
       "quantity": 10,
-      "price": 50.00,
-      "amount": 500.00
-    },
-    {
-      "id": "2",
-      "description": "Serverio nuoma",
-      "quantity": 1,
-      "price": 100.00,
-      "amount": 100.00
+      "price": 50.0,
+      "amount": 500.0
     }
   ],
-  "tax_amount": 126.00,
-  "tax_subtotal_amount": 600.00,
-  "tax_percent": 21.00,
-  "net_amount": 600.00,
-  "payable_amount": 726.00
+  "tax_amount": 105.0,
+  "tax_subtotal_amount": 500.0,
+  "tax_percent": 21.0,
+  "net_amount": 500.0,
+  "payable_amount": 605.0
 }

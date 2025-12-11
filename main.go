@@ -8,22 +8,32 @@ import (
 	"os"
 )
 
-// --- 1. JSON (INPUT) STRUKTŪRA ---
-// Atitinka jūsų turimą input.json failą
+// =========================================================
+// 1. JSON INPUT STRUKTŪRA (Nuskaitymui)
+// =========================================================
 
 type InputInvoice struct {
-	ID                string     `json:"id"`
-	IssueDate         string     `json:"issue_date"`
-	DueDate           string     `json:"due_date"`
-	Currency          string     `json:"currency"`
-	Supplier          Company    `json:"supplier"`
-	Customer          Company    `json:"customer"`
-	Lines             []LineItem `json:"lines"`
-	TaxAmount         float64    `json:"tax_amount"`
-	TaxSubtotalAmount float64    `json:"tax_subtotal_amount"`
-	TaxPercent        float64    `json:"tax_percent"`
-	NetAmount         float64    `json:"net_amount"`
-	PayableAmount     float64    `json:"payable_amount"`
+	ID                string      `json:"id"`
+	IssueDate         string      `json:"issue_date"`
+	DueDate           string      `json:"due_date"`
+	Currency          string      `json:"currency"`
+	Note              string      `json:"note"`        // Pastaba (pvz. "Žodinė sutartis")
+	OrderID           string      `json:"order_id"`    // Užsakymo Nr.
+	ContractID        string      `json:"contract_id"` // Sutarties Nr. (gali būti tuščias)
+	Project           ProjectInfo `json:"project"`     // Projekto info
+	Supplier          Company     `json:"supplier"`
+	Customer          Company     `json:"customer"`
+	Lines             []LineItem  `json:"lines"`
+	TaxAmount         float64     `json:"tax_amount"`
+	TaxSubtotalAmount float64     `json:"tax_subtotal_amount"`
+	TaxPercent        float64     `json:"tax_percent"`
+	NetAmount         float64     `json:"net_amount"`
+	PayableAmount     float64     `json:"payable_amount"`
+}
+
+type ProjectInfo struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type Company struct {
@@ -43,27 +53,35 @@ type LineItem struct {
 	Amount      float64 `json:"amount"`
 }
 
-// --- 2. UBL XML (OUTPUT) STRUKTŪRA ---
-// Naudojame tiesioginius prefiksus "cbc:" ir "cac:" taguose
+// =========================================================
+// 2. UBL XML STRUKTŪRA (Generavimui)
+// =========================================================
 
 type UBLInvoice struct {
 	XMLName xml.Name `xml:"Invoice"`
 
-	// Namespace deklaracijos (būtinos šaknyje)
+	// --- Namespaces (Privalomi) ---
 	Xmlns    string `xml:"xmlns,attr"`
 	XmlnsCac string `xml:"xmlns:cac,attr"`
 	XmlnsCbc string `xml:"xmlns:cbc,attr"`
 
+	// --- Header ---
 	UBLVersionID     string `xml:"cbc:UBLVersionID"`
 	CustomizationID  string `xml:"cbc:CustomizationID"`
 	ProfileID        string `xml:"cbc:ProfileID"`
 	ID               string `xml:"cbc:ID"`
 	IssueDate        string `xml:"cbc:IssueDate"`
-	DueDate          string `xml:"cbc:DueDate,omitempty"` // omitempty, jei nėra
+	DueDate          string `xml:"cbc:DueDate,omitempty"`
 	InvoiceTypeCode  string `xml:"cbc:InvoiceTypeCode"`
+	Note             string `xml:"cbc:Note,omitempty"` // Vieta pastabai
 	DocumentCurrency string `xml:"cbc:DocumentCurrencyCode"`
 
-	// --- Šalys (Parties) ---
+	// --- Nuorodos (Svarbu eiliškumas!) ---
+	OrderReference            *OrderReference            `xml:"cac:OrderReference,omitempty"`
+	ContractDocumentReference *ContractDocumentReference `xml:"cac:ContractDocumentReference,omitempty"`
+	ProcurementProject        *ProcurementProject        `xml:"cac:ProcurementProject,omitempty"`
+
+	// --- Šalys ---
 	AccountingSupplierParty SupplierParty `xml:"cac:AccountingSupplierParty"`
 	AccountingCustomerParty CustomerParty `xml:"cac:AccountingCustomerParty"`
 
@@ -77,70 +95,71 @@ type UBLInvoice struct {
 
 // --- Pagalbinės XML struktūros ---
 
+// Nuorodos
+type OrderReference struct {
+	ID string `xml:"cbc:ID"`
+}
+type ContractDocumentReference struct {
+	ID string `xml:"cbc:ID"`
+}
+type ProcurementProject struct {
+	ID   string `xml:"cbc:ID"`
+	Name string `xml:"cbc:Name,omitempty"`
+}
+
+// Šalys
 type SupplierParty struct {
 	Party Party `xml:"cac:Party"`
 }
-
 type CustomerParty struct {
 	Party Party `xml:"cac:Party"`
 }
-
 type Party struct {
 	PartyName        PartyName         `xml:"cac:PartyName"`
 	PostalAddress    *PostalAddress    `xml:"cac:PostalAddress,omitempty"`
 	PartyTaxScheme   *PartyTaxScheme   `xml:"cac:PartyTaxScheme,omitempty"`
 	PartyLegalEntity *PartyLegalEntity `xml:"cac:PartyLegalEntity,omitempty"`
 }
-
 type PartyName struct {
 	Name string `xml:"cbc:Name"`
 }
-
 type PostalAddress struct {
 	StreetName string      `xml:"cbc:StreetName"`
 	CityName   string      `xml:"cbc:CityName"`
 	Country    CountryType `xml:"cac:Country"`
 }
-
 type CountryType struct {
 	IdentificationCode string `xml:"cbc:IdentificationCode"`
 }
-
 type PartyTaxScheme struct {
 	CompanyID string    `xml:"cbc:CompanyID"`
 	TaxScheme TaxScheme `xml:"cac:TaxScheme"`
 }
-
 type TaxScheme struct {
 	ID string `xml:"cbc:ID"`
 }
-
 type PartyLegalEntity struct {
 	RegistrationName string `xml:"cbc:RegistrationName"`
 	CompanyID        string `xml:"cbc:CompanyID"`
 }
 
-// --- Mokesčių struktūros ---
-
+// Mokesčiai
 type TaxTotal struct {
 	TaxAmount   Amount        `xml:"cbc:TaxAmount"`
 	TaxSubtotal []TaxSubtotal `xml:"cac:TaxSubtotal,omitempty"`
 }
-
 type TaxSubtotal struct {
 	TaxableAmount Amount      `xml:"cbc:TaxableAmount"`
 	TaxAmount     Amount      `xml:"cbc:TaxAmount"`
 	TaxCategory   TaxCategory `xml:"cac:TaxCategory"`
 }
-
 type TaxCategory struct {
 	ID        string    `xml:"cbc:ID"`
 	Percent   float64   `xml:"cbc:Percent"`
 	TaxScheme TaxScheme `xml:"cac:TaxScheme"`
 }
 
-// --- Galutinės sumos ---
-
+// Sumos
 type MonetaryTotal struct {
 	LineExtensionAmount Amount `xml:"cbc:LineExtensionAmount"`
 	TaxExclusiveAmount  Amount `xml:"cbc:TaxExclusiveAmount"`
@@ -148,8 +167,7 @@ type MonetaryTotal struct {
 	PayableAmount       Amount `xml:"cbc:PayableAmount"`
 }
 
-// --- Eilutės ---
-
+// Eilutės
 type InvoiceLine struct {
 	ID                  string   `xml:"cbc:ID"`
 	InvoicedQuantity    Quantity `xml:"cbc:InvoicedQuantity"`
@@ -157,35 +175,32 @@ type InvoiceLine struct {
 	Item                Item     `xml:"cac:Item"`
 	Price               *Price   `xml:"cac:Price,omitempty"`
 }
-
 type Item struct {
 	Name string `xml:"cbc:Name"`
-	// Galima pridėti ClassifiedTaxCategory čia, jei reikia
 }
-
 type Price struct {
 	PriceAmount Amount `xml:"cbc:PriceAmount"`
 }
 
-// --- Baziniai tipai su atributais ---
-
+// Baziniai tipai
 type Amount struct {
 	CurrencyID string  `xml:"currencyID,attr"`
 	Value      float64 `xml:",chardata"`
 }
-
 type Quantity struct {
 	UnitCode string  `xml:"unitCode,attr"`
 	Value    float64 `xml:",chardata"`
 }
 
-// --- MAIN FUNKCIJA ---
+// =========================================================
+// 3. PAGRINDINĖ LOGIKA (MAIN)
+// =========================================================
 
 func main() {
 	// 1. Nuskaitome failą
 	file, err := os.Open("input.json")
 	if err != nil {
-		fmt.Println("Klaida: Nėra input.json failo")
+		fmt.Println("KLAIDA: Nerastas input.json failas.")
 		return
 	}
 	defer file.Close()
@@ -196,7 +211,7 @@ func main() {
 
 	currency := input.Currency
 
-	// 2. Kuriame UBL struktūrą
+	// 2. Užpildome UBL struktūrą
 	ubl := UBLInvoice{
 		Xmlns:            "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
 		XmlnsCac:         "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
@@ -207,7 +222,8 @@ func main() {
 		ID:               input.ID,
 		IssueDate:        input.IssueDate,
 		DueDate:          input.DueDate,
-		InvoiceTypeCode:  "380",
+		InvoiceTypeCode:  "380", // Visada 380 sąskaitoms
+		Note:             input.Note,
 		DocumentCurrency: currency,
 
 		// PARDAVĖJAS
@@ -258,7 +274,7 @@ func main() {
 					TaxableAmount: Amount{CurrencyID: currency, Value: input.TaxSubtotalAmount},
 					TaxAmount:     Amount{CurrencyID: currency, Value: input.TaxAmount},
 					TaxCategory: TaxCategory{
-						ID:        "S", // Standard rate
+						ID:        "S", // S = Standard
 						Percent:   input.TaxPercent,
 						TaxScheme: TaxScheme{ID: "VAT"},
 					},
@@ -269,13 +285,40 @@ func main() {
 		// GALUTINĖS SUMOS
 		LegalMonetaryTotal: MonetaryTotal{
 			LineExtensionAmount: Amount{CurrencyID: currency, Value: input.NetAmount},
-			TaxExclusiveAmount:  Amount{CurrencyID: currency, Value: input.NetAmount}, // Dažniausiai sutampa su NetAmount, jei nėra ne PVM mokesčių
+			TaxExclusiveAmount:  Amount{CurrencyID: currency, Value: input.NetAmount},
 			TaxInclusiveAmount:  Amount{CurrencyID: currency, Value: input.PayableAmount},
 			PayableAmount:       Amount{CurrencyID: currency, Value: input.PayableAmount},
 		},
 	}
 
-	// EILUTĖS
+	// --- LOGIKA: SUTARTYS IR UŽSAKYMAI (SVARBU SABIS) ---
+
+	// 1. Užsakymo Nr. (Dažnai naudojamas žodinėms sutartims)
+	if input.OrderID != "" {
+		ubl.OrderReference = &OrderReference{ID: input.OrderID}
+	}
+
+	// 2. Sutarties Nr.
+	if input.ContractID != "" {
+		ubl.ContractDocumentReference = &ContractDocumentReference{ID: input.ContractID}
+	}
+
+	// 3. Pirkimo projekto tipas (Pvz. "IsNotForPublication")
+	if input.Project.ID != "" {
+		ubl.ProcurementProject = &ProcurementProject{
+			ID:   input.Project.ID,
+			Name: input.Project.Name,
+		}
+	} else if input.ContractID == "" {
+		// JEI NĖRA SUTARTIES (ŽODINĖ) -> AUTOMATIŠKAI "YES"
+		// Tai užtikrins, kad "verbal invoice" visada turės šį flag'ą
+		ubl.ProcurementProject = &ProcurementProject{
+			ID:   "YES",
+			Name: "IsNotForPublication",
+		}
+	}
+
+	// --- EILUČIŲ CIKLAS ---
 	for _, line := range input.Lines {
 		ublLine := InvoiceLine{
 			ID:                  line.ID,
@@ -291,7 +334,7 @@ func main() {
 		ubl.InvoiceLine = append(ubl.InvoiceLine, ublLine)
 	}
 
-	// 3. Išvedimas
+	// 3. GENERUOJAME XML
 	output, err := xml.MarshalIndent(ubl, "", "  ")
 	if err != nil {
 		panic(err)
