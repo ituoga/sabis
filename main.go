@@ -111,7 +111,6 @@ type ProcurementProject struct {
 	Name string `xml:"cbc:Name,omitempty"`
 }
 
-// --- NAUJA STRUKTŪRA ENDPOINT ID ---
 type EndpointIDType struct {
 	Text     string `xml:",chardata"`
 	SchemeID string `xml:"schemeID,attr"`
@@ -128,7 +127,6 @@ type CustomerParty struct {
 }
 
 type PartyType struct {
-	// SVARBU: EndpointID turi būti aukščiau už PartyName pagal UBL schemą
 	EndpointID       *EndpointIDType   `xml:"cbc:EndpointID,omitempty"`
 	PartyName        *PartyNameType    `xml:"cac:PartyName,omitempty"`
 	PostalAddress    *AddressType      `xml:"cac:PostalAddress,omitempty"`
@@ -204,6 +202,8 @@ type InvoiceLine struct {
 
 type ItemType struct {
 	Name string `xml:"cbc:Name"`
+	// NAUJAS LAUKAS: Privalomas klasifikuotas mokesčio tarifas prekei
+	ClassifiedTaxCategory *TaxCategoryType `xml:"cac:ClassifiedTaxCategory,omitempty"`
 }
 
 type PriceType struct {
@@ -241,13 +241,12 @@ func main() {
 		Note:                 input.Note,
 		DocumentCurrencyCode: curr,
 
-		// PARDAVĖJAS (Su EndpointID)
+		// PARDAVĖJAS
 		AccountingSupplierParty: SupplierParty{
 			Party: PartyType{
-				// NAUJA: Pridedame EndpointID su schemeID="0200"
 				EndpointID: &EndpointIDType{
-					Text:     input.Supplier.CompanyID, // Imame įmonės kodą iš JSON
-					SchemeID: "0200",                   // Kietai įkoduotas reikalavimas
+					Text:     input.Supplier.CompanyID,
+					SchemeID: "0200",
 				},
 				PartyName: &PartyNameType{Name: input.Supplier.Name},
 				PostalAddress: &AddressType{
@@ -266,10 +265,9 @@ func main() {
 			},
 		},
 
-		// PIRKĖJAS (Dažniausiai irgi reikia EndpointID, jei siunčiama per Peppol)
+		// PIRKĖJAS
 		AccountingCustomerParty: CustomerParty{
 			Party: PartyType{
-				// Pridedu ir klientui, nes dažnai SABIS to nori (jei reikia - ištrinkite)
 				EndpointID: &EndpointIDType{
 					Text:     input.Customer.CompanyID,
 					SchemeID: "0200",
@@ -316,15 +314,12 @@ func main() {
 		},
 	}
 
-	// Logika nuorodoms
 	if input.OrderID != "" {
 		inv.OrderReference = &DocReference{ID: input.OrderID}
 	}
 	if input.ContractID != "" {
 		inv.ContractDocumentReference = &DocReference{ID: input.ContractID}
 	}
-
-	// Projekto / Žodinės sutarties logika
 	if input.Project.ID != "" {
 		inv.ProcurementProject = &ProcurementProject{ID: input.Project.ID, Name: input.Project.Name}
 	} else if input.ContractID == "" {
@@ -339,6 +334,14 @@ func main() {
 			LineExtensionAmount: AmountType{Text: fmt.Sprintf("%.2f", l.Amount), CurrencyID: curr},
 			Item: ItemType{
 				Name: l.Description,
+				// PILDOMAS NAUJAS LAUKAS (Pagal Jūsų XML pavyzdį):
+				ClassifiedTaxCategory: &TaxCategoryType{
+					ID:      "S",                                   // Standartinis tarifas
+					Percent: fmt.Sprintf("%.2f", input.TaxPercent), // Pvz "21.00"
+					TaxScheme: TaxSchemeType{
+						ID: "VAT",
+					},
+				},
 			},
 			Price: &PriceType{
 				PriceAmount: AmountType{Text: fmt.Sprintf("%.2f", l.Price), CurrencyID: curr},

@@ -3,7 +3,7 @@ package main
 import "encoding/xml"
 
 // Invoice was generated 2025-12-11 21:27:10 by mind on mb.local with zek 0.1.28.
-type Invoice_ struct {
+type ___Invoice_ struct {
 	XMLName              xml.Name `xml:"Invoice"`
 	Text                 string   `xml:",chardata"`
 	Xmlns                string   `xml:"xmlns,attr"`
