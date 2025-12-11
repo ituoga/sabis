@@ -98,6 +98,9 @@
       <cbc:PriceAmount currencyID="EUR">100</cbc:PriceAmount>
     </cac:Price>
   </cac:InvoiceLine>
+  <cac:OrderReference>
+    <cbc:ID>1</cbc:ID>
+  </cac:OrderReference>
   <cac:ContractDocumentReference>
     <cbc:ID>ŽODINĖ</cbc:ID>
   </cac:ContractDocumentReference>
