@@ -29,24 +29,26 @@ Sukurkite failą `input.json` tame pačiame kataloge. Struktūros pavyzdys:
 
 ```json
 {
-  "id": "SASK-2023-001",
+  "id": "SASK-2023-999",
   "issue_date": "2023-12-11",
   "due_date": "2024-01-11",
   "currency": "EUR",
+  "order_id": "1",
+  "contract_id": "ŽODINĖ",
   "supplier": {
-    "name": "Pardavėjas UAB",
-    "company_id": "300000000",
-    "vat_id": "LT100000000000",
+    "name": "Mano Įmonė UAB",
+    "company_id": "300000001",
+    "vat_id": "LT100000000011",
     "street": "Gedimino pr. 1",
     "city": "Vilnius",
     "country": "LT"
   },
   "customer": {
-    "name": "Pirkėjas VšĮ",
-    "company_id": "100000000",
-    "vat_id": "LT200000000000",
-    "street": "Konstitucijos pr. 20",
-    "city": "Vilnius",
+    "name": "Klientas UAB",
+    "company_id": "300000002",
+    "vat_id": "LT100000000022",
+    "street": "Savanorių pr. 100",
+    "city": "Kaunas",
     "country": "LT"
   },
   "lines": [
@@ -54,16 +56,26 @@ Sukurkite failą `input.json` tame pačiame kataloge. Struktūros pavyzdys:
       "id": "1",
       "description": "Programavimo paslaugos",
       "quantity": 10,
-      "price": 50.00,
-      "amount": 500.00
+      "price": 50.0,
+      "amount": 500.0,
+      "tax_percent": 21.0
+    },
+    {
+      "id": "2",
+      "description": "Serverio nuoma",
+      "quantity": 1,
+      "price": 100.0,
+      "amount": 100.0,
+      "tax_percent": 21.0
     }
   ],
-  "tax_amount": 105.00,
-  "tax_subtotal_amount": 500.00,
-  "tax_percent": 21.00,
-  "net_amount": 500.00,
-  "payable_amount": 605.00
+  "tax_amount": 126.0,
+  "tax_subtotal_amount": 600.0,
+  "tax_percent": 21.0,
+  "net_amount": 600.0,
+  "payable_amount": 726.0
 }
+
 ```
 
 ### 2. Paleidimas
