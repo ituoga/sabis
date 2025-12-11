@@ -5,11 +5,7 @@
   "currency": "EUR",
   "note": "Pirkimas pagal žodinį susitarimą",
   "order_id": "UZSAK-999",
-  "contract_id": "",
-  "project": {
-    "id": "YES",
-    "name": "IsNotForPublication"
-  },
+  "contract_id": "ŽODINĖ",
   "supplier": {
     "name": "Mano Įmonė UAB",
     "company_id": "300000001",

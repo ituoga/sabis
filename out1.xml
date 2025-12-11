@@ -12,10 +12,9 @@
   <cac:OrderReference>
     <cbc:ID>UZSAK-999</cbc:ID>
   </cac:OrderReference>
-  <cac:ProcurementProject>
-    <cbc:ID>YES</cbc:ID>
-    <cbc:Name>IsNotForPublication</cbc:Name>
-  </cac:ProcurementProject>
+  <cac:ContractDocumentReference>
+    <cbc:ID>ŽODINĖ</cbc:ID>
+  </cac:ContractDocumentReference>
   <cac:AccountingSupplierParty>
     <cac:Party>
       <cac:PartyName>
