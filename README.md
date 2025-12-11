@@ -62,3 +62,10 @@ Sukurkite failą `input.json` tame pačiame kataloge. Struktūros pavyzdys:
   "net_amount": 500.00,
   "payable_amount": 605.00
 }
+
+### 2. Paleidimas
+
+`go run . > output.xml`
+
+### 3. Rezultatas
+Gautas `output.xml` failas bus validus UBL 2.1 XML formatas, paruoštas siuntimui per SABIS ar Peppol tinklą
